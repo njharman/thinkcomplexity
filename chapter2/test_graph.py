@@ -2,7 +2,7 @@ from __future__ import absolute_import
 
 import pytest
 
-from .graph import Vertex, Edge, Graph
+from .graph import Vertex, Edge, Graph, GraphException
 
 
 v = Vertex('v')
@@ -66,6 +66,46 @@ class TestGraph:
         g.add_all_edges()
         assert sorted(g.vertices()) == sorted([v, x, w])
         assert len(g.edges()) == 3
+
+    def test_add_regular_edges_negative(self):
+        g = Graph()
+        with pytest.raises(ValueError):
+            g.add_regular_edges(-1)
+
+    def test_add_regular_edges_invalid(self):
+        g = Graph([v, w, x])
+        # degree > vertexcount-1
+        with pytest.raises(GraphException):
+            g.add_regular_edges(3)
+        # degree * vertexcount not even
+        with pytest.raises(GraphException):
+            g.add_regular_edges(1)
+
+    def test_add_regular_edges_0(self):
+        g = Graph()
+        g.add_regular_edges(0)
+        assert g.vertices() == []
+        assert g.edges() == []
+        g = Graph([v, w, x])
+        g.add_regular_edges(0)
+        assert sorted(g.vertices()) == sorted([v, x, w])
+        assert g.edges() == []
+
+    def test_add_regular_edges_1(self):
+        g = Graph()
+        g.add_regular_edges(0)
+        assert g.vertices() == []
+        assert g.edges() == []
+        g = Graph([v, w, x])
+        g.add_regular_edges(0)
+        assert sorted(g.vertices()) == sorted([v, x, w])
+        assert g.edges() == []
+
+    def test_add_regular_edges_n(self):
+        '''Degree * order(vertexcount) must be even.'''
+        g = Graph([v, w, x])
+        g.add_regular_edges(2)
+        assert set(g.edges()) == set([vw, vx, wx])
 
     def test_get_edge_bad_input(self):
         g = Graph()
@@ -133,19 +173,15 @@ class TestGraph:
         assert g.out_edges(w) == [vw, ]
         assert g.out_edges(x) == [vx, ]
 
-    # TODO: proper Exception.
-    @pytest.mark.xfail
-    def test_remove_edge_bad_input(self):
-        g = Graph([v, w], [vw, ])
-        assert g.remove_edge(None) == False
-        assert g.remove_edge(()) == False
-        assert g.remove_edge(v) == False
-
     def test_remove_edge(self):
         g = Graph([v, w, x], [vw, vx])
+        g.remove_edge(vx)
+        assert g == Graph([v, w, x], [vw])
+        g.remove_edge(wv)  # backwards vw
+        assert g == Graph([v, w, x], [])
+
+    def test_remove_edge_notthere(self):
+        g = Graph([v, w, x], [vw, vx])
         g.remove_edge(wx)
-        assert g == Graph([v, w, x], [vw, vx])
-        g.remove_edge(wv)
-        assert g == Graph([v, w, x], [vx])
-        g.remove_edge(vw)
-        assert g == Graph([v, w, x], [vx])
+        assert sorted(g.vertices()) == [v, w, x]
+        assert sorted(g.edges()) == [vw, vx]
