@@ -39,7 +39,9 @@ class CleanBuild(Command):
         pass
 
     def run(self):
-        os.system('rm -vrf ./build ./dist ./*.pyc ./*.tgz ./*.egg-info */__pycache__')
+        os.system('/bin/rm -rvf ./build ./dist ./*.egg-info')
+        os.system('/usr/bin/find * -name "*py[co]" -exec /bin/rm -vf {} ";"')
+        os.system('/usr/bin/find * -name "__pycache__" -exec /bin/rm -rvf {} ";"')
 
 
 this_dir = os.path.abspath(os.path.dirname(__file__))

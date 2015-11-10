@@ -18,5 +18,14 @@ Chapter 2
 Kind of crappy Graph classes...
 
 Exercise 3, add_regular_edges: First exercise that required some thought.
+After several false starts, I had to google solution.
 
 Exercise 4, Not using binomial distribution. Not even sure how to.
+
+Exercise 5, is_connected: Not fast on maximally connected graphs (degree n-1).
+Shouldn't algo only visit each node once? Hmmm, was significantly faster moving
+mark node to add neighbors to queue loop. Prior to that duplicate nodes would
+be added to queue.
+
+This led me to look at speed of add_all_edges, On^2? Not very fast. But, maybe
+best possible?

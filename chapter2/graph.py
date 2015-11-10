@@ -4,11 +4,12 @@ Copyright 2011 Allen B. Downey.
 Modified 2015 by Norman J. Harman Jr.
 Distributed under the GNU General Public License at gnu.org/licenses/gpl.html.
 '''
+from __future__ import print_function
 
 import math
 import random
+import itertools
 from functools import total_ordering
-from itertools import chain
 
 
 class GraphException(Exception):
@@ -95,20 +96,19 @@ class Graph(dict):
     def add_all_edges(self):
         '''Makes graph complete by adding Edge between all pairs of Vertices.
 
-        WARNING: Existing Edges are removed.
+        WARNING: All existing Edges are removed.
         '''
         self._remove_all_edges()
-        for v in self.keys():
-            for w in self.keys():
-                if v == w:
-                    continue
-                self[v][w] = Edge(v, w)
+        # Is there faster than On^2 algo for all possible pairs of sequence?
+        # Assume stdlib would use it... Takes 11s with 1000 vertex graph.
+        for v1, v2 in itertools.combinations(self.keys(), 2):
+            self.add_edge(Edge(v1, v2))
 
     # TODO: Should be called make_regular.
     def add_regular_edges(self, degree):
         '''Makes degree'th regular graph. That is each vertex has same number of neighbors.
 
-        WARNING: Existing Edges are removed.
+        WARNING: All existing Edges are removed.
 
         For d regular graph of order o to exist, o >= d+1 and o*d is even.
 
@@ -134,7 +134,7 @@ class Graph(dict):
         m = int(math.floor(degree / 2.0))
         for i in range(vertex_count):
             # List of indexes of the m vertices before and after i.
-            for n in chain(range(i - m, i), range(1 + i, 1 + i + m)):
+            for n in itertools.chain(range(i - m, i), range(1 + i, 1 + i + m)):
                 n = normalize_index(n)
                 self.add_edge(Edge(vertices[i], vertices[n]))
             # If odd degree, add extra vertex opposite.
@@ -142,6 +142,31 @@ class Graph(dict):
                 n = i - (vertex_count // 2)
                 n = normalize_index(n)
                 self.add_edge(Edge(vertices[i], vertices[n]))
+
+    def is_connected(self):
+        '''Is there a path from every node to every other node.'''
+        if len(self) == 0:
+            return True
+        # Prime queue with "first vertex.
+        # Pop a vertex from queue
+        #   add all it's non-marked neighbors to queue.
+        #   mark them as visited.
+        #   repeat until queue empty.
+        # Graph is connected if all vertices are marked.
+        to_visit = list()
+        marked = set()
+        to_visit.append(self.vertices()[0])
+        marked.add(to_visit[0])
+        while to_visit:
+            v = to_visit.pop()
+            for v in self.out_vertices(v):
+                if v not in marked:
+                    marked.add(v)
+                    to_visit.append(v)
+        for v in self.vertices():
+            if v not in marked:
+                return False
+        return True
 
     def add_vertex(self, v):
         '''Add Vertex "v" to graph.'''
@@ -204,8 +229,11 @@ class RandomGraph(Graph):
         '''Starting with an edgeless graph, add edges at random so that the
         probability is p that there is an edge between any two nodes.
 
+        WARNING: All existing Edges are removed.
+
         :param p: float 0-1
         '''
+        self._remove_all_edges()
         # TODO: Should be binomial distribution.
         # All possible undirected edges, normalized.
         edges = set(tuple(sorted([v1, v2])) for v1 in self for v2 in self if v1 != v2)

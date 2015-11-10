@@ -106,7 +106,13 @@ class TestGraph:
     def test_add_regular_edges_odd(self):
         g = Graph([v, w, x, y])
         g.add_regular_edges(1)
-        #assert set(g.edges()) == set([yw, xv])
+        # assert set(g.edges()) == set([yw, xv])
+
+    def test_is_connected(self):
+        assert Graph().is_connected()
+        assert Graph([v, w], [vw, ]).is_connected()
+        assert not Graph([v, w]).is_connected()
+        assert not Graph([v, w, x], [wx, ]).is_connected()
 
     def test_get_edge_bad_input(self):
         g = Graph()
