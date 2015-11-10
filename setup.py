@@ -24,7 +24,7 @@ class RunTests(Command):
 
     def run(self):
         '''Run all tests!'''
-        errno = subprocess.call(['py.test', '--cov=bubba', '--cov-report=term-missing'])
+        errno = subprocess.call(['py.test', '--cov=chapter2', '--cov-report=term-missing'])
         raise SystemExit(errno)
 
 

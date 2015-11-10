@@ -18,3 +18,5 @@ Chapter 2
 Kind of crappy Graph classes...
 
 Exercise 3, add_regular_edges: First exercise that required some thought.
+
+Exercise 4, Not using binomial distribution. Not even sure how to.

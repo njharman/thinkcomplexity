@@ -2,16 +2,19 @@ from __future__ import absolute_import
 
 import pytest
 
-from .graph import Vertex, Edge, Graph, GraphException
+from .graph import Vertex, Edge, Graph, RandomGraph, GraphException
 
 
 v = Vertex('v')
 w = Vertex('w')
 x = Vertex('x')
+y = Vertex('y')
 vw = Edge(v, w)
 wv = Edge(w, v)
 vx = Edge(v, x)
+xv = Edge(v, x)
 wx = Edge(w, x)
+yw = Edge(y, w)
 
 
 class TestVertex:
@@ -39,6 +42,10 @@ class TestEdge:
     def test_Edge(self):
         assert str(Edge(v, w)) == "Edge(Vertex('v'), Vertex('w'))"
         assert repr(Edge(v, w)) == "Edge(Vertex('v'), Vertex('w'))"
+
+    def test_Edge_bad_value(self):
+        with pytest.raises(ValueError):
+            Edge(v)
 
     def test_Edge_equality(self):
         assert Edge(v, w) != Edge(v, x)
@@ -91,21 +98,15 @@ class TestGraph:
         assert sorted(g.vertices()) == sorted([v, x, w])
         assert g.edges() == []
 
-    def test_add_regular_edges_1(self):
-        g = Graph()
-        g.add_regular_edges(0)
-        assert g.vertices() == []
-        assert g.edges() == []
-        g = Graph([v, w, x])
-        g.add_regular_edges(0)
-        assert sorted(g.vertices()) == sorted([v, x, w])
-        assert g.edges() == []
-
-    def test_add_regular_edges_n(self):
-        '''Degree * order(vertexcount) must be even.'''
+    def test_add_regular_edges_even(self):
         g = Graph([v, w, x])
         g.add_regular_edges(2)
         assert set(g.edges()) == set([vw, vx, wx])
+
+    def test_add_regular_edges_odd(self):
+        g = Graph([v, w, x, y])
+        g.add_regular_edges(1)
+        #assert set(g.edges()) == set([yw, xv])
 
     def test_get_edge_bad_input(self):
         g = Graph()
@@ -185,3 +186,17 @@ class TestGraph:
         g.remove_edge(wx)
         assert sorted(g.vertices()) == [v, w, x]
         assert sorted(g.edges()) == [vw, vx]
+
+
+class TestRandomGraph:
+    def test_RandomGraph_str(self):
+        assert str(RandomGraph()) == "RandomGraph({})"
+
+    def test_RandomGraph_repr(self):
+        assert repr(RandomGraph()) == "RandomGraph({})"
+
+    def test_add_random_edges(self):
+        g = RandomGraph([v, w, x, y])
+        g.add_random_edges(.2)
+        g = RandomGraph([v, w, x])
+        g.add_random_edges(1)

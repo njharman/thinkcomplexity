@@ -6,6 +6,7 @@ Distributed under the GNU General Public License at gnu.org/licenses/gpl.html.
 '''
 
 import math
+import random
 from functools import total_ordering
 from itertools import chain
 
@@ -24,7 +25,7 @@ class Vertex(object):
     def __repr__(self):
         '''Returns a string representation of this object that can
         be evaluated as a Python expression.'''
-        return 'Vertex(%s)' % repr(self.label)
+        return '%s(%s)' % (self.__class__.__name__, repr(self.label))
 
     __str__ = __repr__
 
@@ -82,7 +83,7 @@ class Graph(dict):
         return super(Graph, self).__str__()
 
     def __repr__(self):
-        return 'Graph(%s)' % super(Graph, self).__repr__()
+        return '%s(%s)' % (self.__class__.__name__, super(Graph, self).__repr__())
 
     def _remove_all_edges(self):
         '''Remove all edges from graph.'''
@@ -196,3 +197,19 @@ class Graph(dict):
             return list(set(e for e in self[v].values()))
         except KeyError:
             return list()
+
+
+class RandomGraph(Graph):
+    def add_random_edges(self, p):
+        '''Starting with an edgeless graph, add edges at random so that the
+        probability is p that there is an edge between any two nodes.
+
+        :param p: float 0-1
+        '''
+        # TODO: Should be binomial distribution.
+        # All possible undirected edges, normalized.
+        edges = set(tuple(sorted([v1, v2])) for v1 in self for v2 in self if v1 != v2)
+        for v1, v2 in edges:
+            if random.random() <= p:
+                e = Edge(v1, v2)
+                self.add_edge(e)
