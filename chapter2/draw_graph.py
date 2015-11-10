@@ -1,24 +1,19 @@
 #!/usr/bin/env python
 import sys
-import string
-from itertools import chain, product
 
 from GraphWorld import CircleLayout, GraphWorld
-from graph import Vertex, Graph, RandomGraph
+from graph import Vertex, Graph, RandomGraph, labels
 
 
-labels = chain(string.ascii_lowercase, product(string.ascii_uppercase, range(1, 101)))
-
-
-def draw(graph):
+def draw(graph, size=500):
     layout = CircleLayout(graph)
-    gw = GraphWorld()
+    gw = GraphWorld(width=size, height=size)
     gw.show_graph(graph, layout)
     gw.mainloop()
 
 
 def make_vertices(order):
-    return [Vertex(c) for c in labels[:order]]
+    return [Vertex(c) for c in labels][:order]
 
 
 def regular(vertices, degree):

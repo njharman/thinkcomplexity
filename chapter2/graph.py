@@ -8,8 +8,12 @@ from __future__ import print_function
 
 import math
 import random
+import string
 import itertools
 from functools import total_ordering
+
+
+labels = itertools.chain(string.ascii_lowercase, itertools.product(string.ascii_uppercase, range(1, 101)))
 
 
 class GraphException(Exception):
@@ -153,20 +157,16 @@ class Graph(dict):
         #   mark them as visited.
         #   repeat until queue empty.
         # Graph is connected if all vertices are marked.
-        to_visit = list()
-        marked = set()
-        to_visit.append(self.vertices()[0])
-        marked.add(to_visit[0])
+        vertices = self.vertices()
+        to_visit = list([vertices[0]])
+        visited = set()
         while to_visit:
             v = to_visit.pop()
-            for v in self.out_vertices(v):
-                if v not in marked:
-                    marked.add(v)
-                    to_visit.append(v)
-        for v in self.vertices():
-            if v not in marked:
-                return False
-        return True
+            if v in visited:
+                continue
+            visited.add(v)
+            to_visit.extend(self.out_vertices(v))
+        return len(visited) == len(vertices)
 
     def add_vertex(self, v):
         '''Add Vertex "v" to graph.'''
@@ -236,8 +236,9 @@ class RandomGraph(Graph):
         self._remove_all_edges()
         # TODO: Should be binomial distribution.
         # All possible undirected edges, normalized.
-        edges = set(tuple(sorted([v1, v2])) for v1 in self for v2 in self if v1 != v2)
-        for v1, v2 in edges:
-            if random.random() <= p:
-                e = Edge(v1, v2)
-                self.add_edge(e)
+        vs = self.vertices()
+        for i, v in enumerate(vs):
+            for j, w in enumerate(vs):
+                if j <= i: continue
+                if random.random() > p: continue
+                self.add_edge(Edge(v, w))

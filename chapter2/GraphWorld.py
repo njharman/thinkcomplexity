@@ -53,15 +53,12 @@ class GraphCanvas(GuiCanvas):
 class GraphWorld(Gui):
     '''GraphWorld is a Gui that has a Graph Canvas and control buttons.'''
 
-    def __init__(self):
+    def __init__(self, width=500, height=500):
+        '''Create the widgets.'''
         Gui.__init__(self)
         self.title('GraphWorld')
-        self.setup()
-
-    def setup(self):
-        '''Create the widgets.'''
-        self.ca_width = 400
-        self.ca_height = 400
+        self.ca_width = width
+        self.ca_height = height
         xscale = self.ca_width / 20
         yscale = self.ca_height / 20
 
