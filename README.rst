@@ -13,8 +13,9 @@ Goals
 Thoughts
 --------
 
-Chapter 2
-=========
+Chapter 2 Graphs
+~~~~~~~~~~~~~~~~
+
 Kind of crappy Graph classes...
 
 Exercise 3, add_regular_edges: First exercise that required some thought.
@@ -29,3 +30,8 @@ be added to queue.
 
 This led me to look at speed of add_all_edges, On^2? Not very fast. But, maybe
 best possible?
+
+
+Chapter 3 Analysis of Algorithms
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Used bisect module and then wrote my own bisection2 in sort.py
