@@ -1,5 +1,5 @@
-Exercise 6
-==========
+Chapter 2 Exercise 6
+====================
 
 One of the properties that displays this kind of transition is connectedness.
 For a given size n, there is a critical value, p*, such that a random graph
@@ -13,5 +13,6 @@ You can download my solution from thinkcomplex.com/RandomGraph.py.
 
 How does the abruptness of the transition depend on n?
 ------------------------------------------------------
+
 The transition occurs at lower p's for larger n's.
 The sharpness increases for larger n's.

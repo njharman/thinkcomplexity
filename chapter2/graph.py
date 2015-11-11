@@ -13,7 +13,18 @@ import itertools
 from functools import total_ordering
 
 
-labels = itertools.chain(string.ascii_lowercase, itertools.product(string.ascii_uppercase, range(1, 101)))
+def labels(count=None):
+    i = 0
+    for number in itertools.count(1):
+        for letter in string.ascii_lowercase:
+            yield '%s%i' % (letter, number)
+            i += 1
+            if count and i >= count:
+                return
+
+
+def make_vertices(order):
+    return [Vertex(c) for c in labels(order)]
 
 
 class GraphException(Exception):
@@ -233,12 +244,13 @@ class RandomGraph(Graph):
 
         :param p: float 0-1
         '''
+        p = float(max(min(0, p), 1))
         self._remove_all_edges()
-        # TODO: Should be binomial distribution.
-        # All possible undirected edges, normalized.
         vs = self.vertices()
         for i, v in enumerate(vs):
             for j, w in enumerate(vs):
-                if j <= i: continue
-                if random.random() > p: continue
+                if j <= i:
+                    continue
+                if random.random() > p:
+                    continue
                 self.add_edge(Edge(v, w))

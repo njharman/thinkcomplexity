@@ -1,5 +1,5 @@
-Exercise 2
-==========
+Chapter 2 Exercise 2
+====================
 
 In this exercise you write methods that will be useful for many of the Graph
 algorithms that are coming up.

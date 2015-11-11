@@ -2,7 +2,7 @@
 import sys
 
 from GraphWorld import CircleLayout, GraphWorld
-from graph import Vertex, Graph, RandomGraph, labels
+from graph import Graph, RandomGraph, make_vertices
 
 
 def draw(graph, size=500):
@@ -10,10 +10,6 @@ def draw(graph, size=500):
     gw = GraphWorld(width=size, height=size)
     gw.show_graph(graph, layout)
     gw.mainloop()
-
-
-def make_vertices(order):
-    return [Vertex(c) for c in labels][:order]
 
 
 def regular(vertices, degree):

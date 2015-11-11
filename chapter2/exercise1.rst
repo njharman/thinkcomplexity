@@ -1,5 +1,5 @@
-Exercise 1
-============
+Chapter 2 Exercise 1
+====================
 
 Read the Wikipedia page about graphs at
 http://en.wikipedia.org/wiki/Graph_(mathematics) and answer the following

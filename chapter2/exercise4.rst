@@ -1,5 +1,5 @@
-Exercise 4
-==========
+Chapter 2 Exercise 4
+====================
 
 Create a file named RandomGraph.py and define a class named RandomGraph that
 inherits from Graph and provides a method named add_random_edges that takes

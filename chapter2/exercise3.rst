@@ -1,5 +1,6 @@
-Exercise 3
-==========
+Chapter 2 Exercise 3
+====================
+
 Write a method named add_regular_edges that starts with an edgeless graph and
 adds edges so that every vertex has the same degree. The degree of a node is
 the number of edges it is connected to.

@@ -2,7 +2,7 @@ from __future__ import absolute_import
 
 import pytest
 
-from .graph import Vertex, Edge, Graph, RandomGraph, GraphException
+from .graph import labels, make_vertices, Vertex, Edge, Graph, RandomGraph, GraphException
 
 
 v = Vertex('v')
@@ -15,6 +15,19 @@ vx = Edge(v, x)
 xv = Edge(v, x)
 wx = Edge(w, x)
 yw = Edge(y, w)
+
+
+def test_labels():
+    l = labels()
+    assert next(l) == 'a1'
+    assert next(l) == 'b1'
+
+
+def test_make_vertices():
+    assert len(make_vertices(1)) == 1
+    assert len(make_vertices(4)) == 4
+    for v in make_vertices(2):
+        assert isinstance(v, Vertex)
 
 
 class TestVertex:

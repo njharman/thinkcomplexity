@@ -5,12 +5,12 @@ from __future__ import print_function
 
 import sys
 
-from graph import RandomGraph, Vertex, labels
+from graph import RandomGraph, make_vertices
 
 
 def fraction_connected(n, p, count=20):
     '''Return fraction of RandomGraphs G(n,p) that are connected.'''
-    vertices = [Vertex(c) for c in labels][:n]
+    vertices = make_vertices(n)
     connected = 0.0
     for i in range(count):
         g = RandomGraph(vertices)
