@@ -35,3 +35,10 @@ best possible?
 Chapter 3 Analysis of Algorithms
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Used bisect module and then wrote my own bisection2 in sort.py
+
+Recently watched this lecture https://www.youtube.com/watch?v=fYlnfvKVDoM "All
+Your Ducks In A Row: Data Structures in the Standard Library and Beyond"
+(PyCon US) by Brandon Rhodes. An excellent adjunct to this chapter.
+
+Didn't write unittests for any of mymap.py, yet (It's sort of throw away cause
+dict exists).
