@@ -42,3 +42,6 @@ Your Ducks In A Row: Data Structures in the Standard Library and Beyond"
 
 Didn't write unittests for any of mymap.py, yet (It's sort of throw away cause
 dict exists).
+
+Exercise 5 Dang thought my Red-Black tree was wrong. But inserting sorted keys
+produces a "wrong looking" right imbalanced tree...

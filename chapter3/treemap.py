@@ -27,8 +27,16 @@ class Node(object):
         return '%s->%s' % (self.key, self.value)
 
     @property
+    def isred(self):
+        return self.red
+
+    @property
+    def isblack(self):
+        return not self.red
+
+    @property
     def grand(self):
-        if self.parent and self.parent.parent:
+        if self.parent:
             return self.parent.parent
 
     @property
@@ -100,16 +108,16 @@ class TreeMap(object):
         if node == self.root:
             node.red = False
         # Black parent
-        elif not node.parent.red:
+        elif node.parent.isblack:
             return
         # Red parent, Red uncle
-        elif node.uncle and node.uncle.red:
+        elif node.uncle and node.uncle.isred:
             node.parent.red = False
             node.uncle.red = False
             node.grand.red = True
             self._normalize(node.grand)
         # Red parent, Black uncle
-        elif node.uncle and not node.uncle.red:
+        elif node.uncle and node.uncle.isblack:
             # N is added to right of left child of grandparent
             if node == node.parent.right and node.parent == node.grand.left:
                 p = node.parent
@@ -142,20 +150,21 @@ class TreeMap(object):
                 n = n.left
             elif k > n.key:
                 n = n.right
+            else:  # Same key, replace value.
+                n.value = v
+                return
         # and put it there.
         newnode = Node(red=True, left=self.nil, right=self.nil, parent=parent, key=k, value=v)
         if parent == self.nil:
             self.root = newnode
-        elif k < parent.key:
+        elif k <= parent.key:
             parent.left = newnode
         else:
             parent.right = newnode
         self._normalize(newnode)
 
     def get(self, k):
-        '''Looks up the key (k) and returns the corresponding value,
-        or raises KeyError if the key is not found.
-        '''
+        '''Returns value for key (k) or raises KeyError if no such key.'''
         n = self.root
         while n != self.nil:
             if k < n.key:
@@ -176,23 +185,31 @@ class TreeMap(object):
             self.walk(node.left, i + 1)
             self.walk(node.right, i)
 
+
 def check_invariants(tree):
     '''Adapted from http://code.activestate.com/recipes/576817-red-black-tree/
     :return: True iff satisfies all criteria to be red-black tree.
     '''
     def is_red_black_node(node):
         '@return: num_black, is ok'
+        if tree.nil.isred:
+            print('red nil: %r' % (tree.nil, ))
+            return 0, False
+        for field in ('left', 'right', 'parent', 'key', 'value'):
+            if getattr(tree.nil, field) is not None:
+                print('messed up nil: %r' % (tree.nil, ))
+                return 0, False
         # Check has left and right.
         if not ((node.left and node.right) or (not node.left and not node.right)):
             print('nodes: %r' % (node, ))
             return 0, False
         # Check leaves are black.
-        if not node.left and not node.right and node.red:
+        if not node.left and not node.right and node.isred:
             print('red leaves: %r' % (node, ))
             return 0, False
         # If node is red, check children are black.
-        if node.red and node.left and node.right:
-            if node.left.red or node.right.red:
+        if node.isred and node.left and node.right:
+            if node.left.isred or node.right.isred:
                 print('red nodes need black children %r' % (node, ))
                 return 0, False
         # Descend tree and check black counts are balanced.
@@ -221,7 +238,7 @@ def check_invariants(tree):
         else:
             return 0, True
     num_black, is_ok = is_red_black_node(tree.root)
-    return is_ok and not tree.root.red
+    return is_ok and not tree.root.isred
 
 
 def write_tree_as_dot(t, fh, show_nil=False):
@@ -229,16 +246,13 @@ def write_tree_as_dot(t, fh, show_nil=False):
     Adapted from http://code.activestate.com/recipes/576817-red-black-tree/
     '''
     def visit_node(node):
-        'Visit a node.'
-        print('  %s [label="%s", color="%s"];' % (node.key, node, ['blk', 'red'][node.red]), file=fh)
-        if node.left:
-            if node.left != t.nil or show_nil:
-                visit_node(node.left)
-                print('  %s -> %s ;' % (node.key, node.left.key), file=fh)
-        if node.right:
-            if node.right != t.nil or show_nil:
-                visit_node(node.right)
-                print('  %s -> %s ;' % (node.key, node.right.key), file=fh)
+        print('  %s [label="%s", color="%s"];' % (node.key, node, ['black', 'red'][node.red]), file=fh)
+        if node.left and (node.left != t.nil or show_nil):
+            visit_node(node.left)
+            print('  %s -> %s ;' % (node.key, node.left.key), file=fh)
+        if node.right and (node.right != t.nil or show_nil):
+            visit_node(node.right)
+            print('  %s -> %s ;' % (node.key, node.right.key), file=fh)
 
     print('// Created by rbtree.write_dot()', file=fh)
     print('digraph red_black_tree {', file=fh)
@@ -251,18 +265,23 @@ def graph_tree(t, filename):
     Adapted from http://code.activestate.com/recipes/576817-red-black-tree/
     '''
     import os
+    os.system('rm -f %s.dot %s.svg' % (filename, filename))
     with open('%s.dot' % filename, 'w') as fh:
         write_tree_as_dot(t, fh)
     os.system('dot %s.dot -Tsvg -o %s.svg' % (filename, filename))
 
 
 if __name__ == '__main__':
-    m = TreeMap()
-    s = string.ascii_lowercase
-    for k, v in enumerate(s):
-        m.add(k, v)
-    graph_tree(m, 'tree')
-    m.walk(m.root)
-    print(m, check_invariants(m))
-    for k in range(len(s)):
-        print(k, m.get(k))
+    import random
+
+    def map_me(name, size=26):
+        t = TreeMap()
+        pairs = list(enumerate(random.choice(string.ascii_lowercase) for i in range(size)))
+        random.shuffle(pairs)
+        for k, v in pairs:
+            t.add(k, v)
+        graph_tree(t, name)
+        print(name, t, check_invariants(t))
+
+    map_me('tree1', 26)
+    map_me('tree2', 50)
