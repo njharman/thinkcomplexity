@@ -45,3 +45,5 @@ dict exists).
 
 Exercise 5 Dang thought my Red-Black tree was wrong. But inserting sorted keys
 produces a "wrong looking" right imbalanced tree...
+
+Exercise 6 Got real bored with this and didn't exactly finish.

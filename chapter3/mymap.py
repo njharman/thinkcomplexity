@@ -14,24 +14,32 @@ class LinearMap(object):
     '''
 
     def __init__(self):
-        self.items = []
+        self.items = list()
 
     def __str__(self):
         return 'LinearMap(%s)' % self.items
 
-    def add(self, k, v):
+    def __len__(self):
+        return len(self.items)
+
+    def __iter__(self):
+        '''Iterate over items being held, return 1 item per call.'''
+        for item in self.items:
+            yield item
+
+    def add(self, key, value):
         '''Add a new item that maps from key (k) to value (v).
         Assumes that they keys are unique.
         '''
-        self.items.append((k, v))
+        self.items.append((key, value))
 
     def get(self, k):
         '''Look up the key (k) and returns the corresponding value,
         or raises KeyError if the key is not found.
         '''
-        for key, val in self.items:
+        for key, value in self.items:
             if key == k:
-                return val
+                return value
         raise KeyError
 
 
@@ -43,9 +51,7 @@ class BetterMap(object):
 
     def __init__(self, n=100):
         '''Append (n) LinearMaps onto (self).'''
-        self.maps = []
-        for i in range(n):
-            self.maps.append(LinearMap())
+        self.maps = [LinearMap() for i in range(n)]
 
     def __str__(self):
         return 'BetterMap(%i)' % len(self)
@@ -59,20 +65,20 @@ class BetterMap(object):
         for m in self.maps:
             yield m
 
-    def find_map(self, k):
+    def find_map(self, key):
         '''Find the right LinearMap for key (k).'''
-        index = hash(k) % len(self.maps)
+        index = hash(key) % len(self.maps)
         return self.maps[index]
 
-    def add(self, k, v):
+    def add(self, key, value):
         '''Add a new item to the appropriate LinearMap for key (k).'''
-        m = self.find_map(k)
-        m.add(k, v)
+        m = self.find_map(key)
+        m.add(key, value)
 
-    def get(self, k):
+    def get(self, key):
         '''Find the right LinearMap for key (k) and looks up (k) in it.'''
-        m = self.find_map(k)
-        return m.get(k)
+        m = self.find_map(key)
+        return m.get(key)
 
 
 class HashMap(object):
@@ -86,7 +92,7 @@ class HashMap(object):
 
     def __init__(self):
         '''Starts with 2 LinearMaps and 0 items.'''
-        self.maps = BetterMap(2)
+        self.maps = BetterMap(10)
         self.num = 0
 
     def __str__(self):
@@ -100,7 +106,7 @@ class HashMap(object):
 
     def add(self, k, v):
         '''Resize the map if necessary and adds the new item.'''
-        if self.num == len(self.maps):
+        if self.num >= len(self.maps):
             self.resize()
         self.maps.add(k, v)
         self.num += 1
@@ -109,7 +115,7 @@ class HashMap(object):
         '''Makes a new map, twice as big, and rehashes the items.'''
         new_maps = BetterMap(self.num * 2)
         for m in self.maps:
-            for k, v in m.items:
+            for k, v in m:
                 new_maps.add(k, v)
         self.maps = new_maps
 
