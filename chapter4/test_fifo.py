@@ -4,6 +4,20 @@ from fifo import FIFO
 
 
 class TestFIFO(object):
+    def test_basic(self):
+        t = FIFO()
+        str(t)
+
+    def test_len(self):
+        t = FIFO()
+        assert 0 == len(t)
+        t.append(0)
+        assert 1 == len(t)
+        t.append(0)
+        assert 2 == len(t)
+        t.pop()
+        assert 1 == len(t)
+
     def test_pop_empty(self):
         t = FIFO()
         with pytest.raises(IndexError):

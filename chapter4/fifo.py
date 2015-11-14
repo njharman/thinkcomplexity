@@ -13,6 +13,9 @@ class FIFO(object):
     def __str__(self):
         return self.__class__.__name__
 
+    def __len__(self):
+        return len(self._data)
+
     def append(self, item):
         '''Add item to fifo.'''
         self._data[self._head] = item

@@ -51,4 +51,7 @@ Exercise 6 Got real bored with this and didn't exactly finish.
 
 Chapter 4 Small World Graphs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Exercise 1 I like the dict based FIFO.
+Exercise 1: I like the dict based FIFO.
+
+Exercise 2: Fucking annoying the given bfs() doesn't use same Graph API
+as created in Chapter 2.
