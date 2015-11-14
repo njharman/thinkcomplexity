@@ -10,6 +10,7 @@ import math
 import random
 import string
 import itertools
+import collections
 from functools import total_ordering
 
 
@@ -234,6 +235,25 @@ class Graph(dict):
         except KeyError:
             return list()
 
+    def bfs(self, start, visit=None):
+        '''Breadth first search
+
+        :param start: search from this node.
+        :param visit: func(node) called on each visisted Node.
+        :return: set of visited vertices.
+        '''
+        visited = set()
+        queue = collections.deque([start])
+        while queue:
+            node = queue.popleft()
+            if node in visited:
+                continue
+            visited.add(node)
+            if visit:
+                visit(node)
+            queue.extend(self.out_vertices(node))
+        return visited
+
 
 class RandomGraph(Graph):
     def add_random_edges(self, p):
@@ -244,7 +264,7 @@ class RandomGraph(Graph):
 
         :param p: float 0-1
         '''
-        p = float(max(min(0, p), 1))
+        p = float(min(max(0, p), 1))
         self._remove_all_edges()
         vs = self.vertices()
         for i, v in enumerate(vs):

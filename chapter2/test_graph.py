@@ -206,6 +206,20 @@ class TestGraph:
         assert sorted(g.vertices()) == [v, w, x]
         assert sorted(g.edges()) == [vw, vx]
 
+    def test_bfs(self):
+        g = Graph([v, w, x, y], [vw, vx, wx])
+        assert set([v, w, x]) == g.bfs(v)
+        assert set([v, w, x]) == g.bfs(w)
+        assert set([y, ]) == g.bfs(y)
+
+    def test_bfs_visit(self):
+        def visit(node):
+            visited.add(node)
+        visited = set()
+        g = Graph([v, w, x, y], [vw, vx, wx])
+        g.bfs(v, visit)
+        assert set([v, w, x]) == visited
+
 
 class TestRandomGraph:
     def test_RandomGraph_str(self):
@@ -216,6 +230,6 @@ class TestRandomGraph:
 
     def test_add_random_edges(self):
         g = RandomGraph([v, w, x, y])
-        g.add_random_edges(.2)
-        g = RandomGraph([v, w, x])
+        g.add_random_edges(0)
+        g.add_random_edges(0.1)
         g.add_random_edges(1)

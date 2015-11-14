@@ -1,6 +1,6 @@
 import pytest
 
-from fifo import FIFO
+from .fifo import FIFO
 
 
 class TestFIFO(object):
@@ -43,7 +43,3 @@ class TestFIFO(object):
         for i in range(1000, 1500):
             t.append(i)
             assert i - 500 == t.pop()
-
-
-
-

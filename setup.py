@@ -11,7 +11,7 @@ from setuptools import Command, find_packages, setup
 # to install this package.
 
 
-class RunTests(Command):
+class RunTests(Command, object):
     '''Run all tests.'''
     description = 'run tests'
     user_options = []
@@ -32,8 +32,8 @@ class RunTests(Command):
         raise SystemExit(errno)
 
 
-class CleanBuild(Command):
-    '''Custom clean command to tidy up the project root.'''
+class CleanBuild(Command, object):
+    '''Remove build artifacts.'''
     user_options = []
 
     def initialize_options(self):
@@ -43,9 +43,16 @@ class CleanBuild(Command):
         pass
 
     def run(self):
-        os.system('/bin/rm -rvf ./build ./dist ./*.egg-info')
+        os.system('/bin/rm -rvf MANIFEST ./build ./dist ./*.egg-info')
         os.system('/usr/bin/find * -name "*py[co]" -exec /bin/rm -vf {} ";"')
         os.system('/usr/bin/find * -name "__pycache__" -exec /bin/rm -rvf {} ";"')
+
+
+class CleanSuper(CleanBuild):
+    '''Remove build artifacts and .tox, .cache, .coverage.'''
+    def run(self):
+        super(CleanSuper, self).run()
+        os.system('/bin/rm -rvf .cache .tox .coverage')
 
 
 this_dir = os.path.abspath(os.path.dirname(__file__))
@@ -70,5 +77,6 @@ setup(
     cmdclass={
         'test': RunTests,
         'clean': CleanBuild,
+        'superclean': CleanSuper,
         },
     )
