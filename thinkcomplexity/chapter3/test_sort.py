@@ -2,7 +2,7 @@ from __future__ import absolute_import
 
 import pytest
 
-from .sort import bisection, bisection2
+from thinkcomplexity.chapter3.sort import bisection, bisection2
 
 
 def test_bisection():

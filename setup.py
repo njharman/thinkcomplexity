@@ -13,8 +13,8 @@ from setuptools import Command, find_packages, setup
 
 class RunTests(Command, object):
     '''Run all tests.'''
-    description = 'run tests'
-    user_options = []
+    description = 'All the tests with coverage'
+    user_options = list()
 
     def initialize_options(self):
         pass
@@ -23,7 +23,6 @@ class RunTests(Command, object):
         pass
 
     def run(self):
-        '''Run all tests!'''
         errno = subprocess.call(['py.test',
             '--cov=chapter2',
             '--cov=chapter3',
@@ -34,7 +33,7 @@ class RunTests(Command, object):
 
 class CleanBuild(Command, object):
     '''Remove build artifacts.'''
-    user_options = []
+    user_options = list()
 
     def initialize_options(self):
         pass

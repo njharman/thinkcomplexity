@@ -1,6 +1,8 @@
+from __future__ import absolute_import
+
 import pytest
 
-from .fifo import FIFO
+from thinkcomplexity.chapter4.fifo import FIFO
 
 
 class TestFIFO(object):

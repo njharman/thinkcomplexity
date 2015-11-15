@@ -2,7 +2,7 @@ from __future__ import absolute_import
 
 import pytest
 
-from .graph import labels, make_vertices, Vertex, Edge, Graph, RandomGraph, GraphException
+from thinkcomplexity.chapter2.graph import labels, make_vertices, Vertex, Edge, Graph, RandomGraph, GraphException
 
 
 v = Vertex('v')
