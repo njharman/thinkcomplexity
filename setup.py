@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 
-import codecs
 import os
-import os.path
-import subprocess
+import sys
+import codecs
 from setuptools import Command, find_packages, setup
 
 
@@ -12,23 +11,23 @@ from setuptools import Command, find_packages, setup
 
 
 class RunTests(Command, object):
-    '''Run all tests.'''
-    description = 'All the tests with coverage'
-    user_options = list()
+    description = 'All the tests with coverage!'
+    user_options = [('pytest-args=', 'a', 'Arguments to pass to py.test')]
 
     def initialize_options(self):
-        pass
+        self.pytest_args = [
+                '--cov=thinkcomplexity',
+                '--cov-report=term-missing',
+                ]
 
     def finalize_options(self):
-        pass
+        if not isinstance(self.pytest_args, list):
+            self.pytest_args = self.pytest_args.split(',')
 
     def run(self):
-        errno = subprocess.call(['py.test',
-            '--cov=chapter2',
-            '--cov=chapter3',
-            '--cov=chapter4',
-            '--cov-report=term-missing'])
-        raise SystemExit(errno)
+        import pytest
+        errno = pytest.main(self.pytest_args)
+        sys.exit(errno)
 
 
 class CleanBuild(Command, object):
