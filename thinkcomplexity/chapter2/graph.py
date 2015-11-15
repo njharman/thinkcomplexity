@@ -13,6 +13,8 @@ import itertools
 import collections
 from functools import total_ordering
 
+__all__ = ['labels', 'make_vertices', 'GraphException', 'Vertex', 'Edge', 'Graph', 'RandomGraph']
+
 
 def labels(count=None):
     i = 0
@@ -20,7 +22,7 @@ def labels(count=None):
         for letter in string.ascii_lowercase:
             yield '%s%i' % (letter, number)
             i += 1
-            if count and i >= count:
+            if count is not None and i >= count:
                 return
 
 
@@ -184,6 +186,14 @@ class Graph(dict):
         '''Add Vertex "v" to graph.'''
         self[v] = dict()
 
+    def del_vertex(self, v):
+        '''Remove Vertex v and any edges that connect to it.'''
+        if v not in self:
+            return
+        for edge in self.out_edges(v):
+            self.del_edge(edge)
+        del self[v]
+
     def add_edge(self, e):
         '''Add undirected Edge "e" to graph.
 
@@ -194,8 +204,8 @@ class Graph(dict):
         self[v][w] = e
         self[w][v] = e
 
-    def remove_edge(self, e):
-        '''Remove any reference Edge "e".'''
+    def del_edge(self, e):
+        '''Remove all references Edge "e".'''
         v, w = e
         try:
             del self[v][w]
@@ -212,6 +222,14 @@ class Graph(dict):
         if not vertex:
             return None
         return vertex.get(w, None)
+
+    def order(self):
+        '''Number of vertices in graph.'''
+        return len(self)
+
+    def size(self):
+        '''Number of edges in graph.'''
+        return sum(len(v) for v in self.values()) // 2
 
     def vertices(self):
         '''Return list of Vertices.'''

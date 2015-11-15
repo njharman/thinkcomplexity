@@ -157,6 +157,23 @@ class TestGraph:
         assert vw == g.get_edge(v, w)
         assert vw == g.get_edge(w, v)
 
+    def test_order(self):
+        assert 0 == Graph().order()
+        assert 1 == Graph([v, ]).order()
+        assert 4 == Graph([v, w, x, y]).order()
+        g = Graph(make_vertices(10))
+        assert 10 == g.order()
+
+    def test_size(self):
+        assert 0 == Graph().size()
+        assert 1 == Graph([v, w], [vw, ]).size()
+        print('hi')
+        for n in range(8):
+            print(n)
+            g = Graph(make_vertices(n))
+            g.add_all_edges()
+            assert (n * (n - 1)) // 2 == g.size()
+
     def test_vertices_empty(self):
         assert Graph().vertices() == []
 
@@ -193,18 +210,31 @@ class TestGraph:
         assert g.out_edges(w) == [vw, ]
         assert g.out_edges(x) == [vx, ]
 
-    def test_remove_edge(self):
+    def test_del_vertex(self):
+        g = Graph([v, w, x], [vw, vx, wx])
+        g.del_vertex(x)
+        assert g == Graph([v, w], [vw])
+        g.del_vertex(v)
+        assert g == Graph([w, ], [])
+        g.del_vertex(w)
+        assert g == Graph([], [])
+
+    def test_del_vertex_notthere(self):
+        g = Graph([v, w, x], [vw, vx, wx])
+        g.del_vertex(y)
+        assert g == Graph([v, w, x], [vw, vx, wx])
+
+    def test_del_edge(self):
         g = Graph([v, w, x], [vw, vx])
-        g.remove_edge(vx)
+        g.del_edge(vx)
         assert g == Graph([v, w, x], [vw])
-        g.remove_edge(wv)  # backwards vw
+        g.del_edge(wv)  # backwards vw
         assert g == Graph([v, w, x], [])
 
     def test_remove_edge_notthere(self):
         g = Graph([v, w, x], [vw, vx])
-        g.remove_edge(wx)
-        assert sorted(g.vertices()) == [v, w, x]
-        assert sorted(g.edges()) == [vw, vx]
+        g.del_edge(wx)
+        assert g == Graph([v, w, x], [vw, vx])
 
     def test_bfs(self):
         g = Graph([v, w, x, y], [vw, vx, wx])
