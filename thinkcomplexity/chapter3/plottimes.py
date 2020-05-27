@@ -55,10 +55,10 @@ def make_fig(names, nss, tss, scale='log', exp=1.0, filename=None):
         pyplot.show()
 
 
-def time(func, factor):
+def time(testee, factor):
     '''Times the given function with a range of values for n.
 
-    :param func: f(n)
+    :param testee: f.setup(n) f.time(n)
     Returns a list of ns and a list of run times.
     '''
     # test (f) over a range of values for (n)
@@ -66,8 +66,9 @@ def time(func, factor):
     ts = list()
     for i in range(2, 25):
         n = factor * i
+        testee.setup(n)
         start = etime()
-        func(n)
+        testee.time(n)
         end = etime()
         t = end - start
         print(n, t)
@@ -91,12 +92,6 @@ def tf_add(cls):
         m = cls()
         for i in range(n):
             m.add(n, n)
-    return test
-
-
-def tf_get(cls):
-    def test(n):
-        m.get(random.randint(0, n)
     return test
 
 

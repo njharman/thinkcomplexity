@@ -110,6 +110,10 @@ class Graph(dict):
         for vertex in vertices:
             self[vertex] = dict()
 
+    def _normalize_p(self, p):
+        '''Force p to be float between 0 and 1.'''
+        return float(min(max(0, p), 1))
+
     # TODO: Should be called make_complete.
     def add_all_edges(self):
         '''Makes graph complete by adding Edge between all pairs of Vertices.
@@ -282,7 +286,7 @@ class RandomGraph(Graph):
 
         :param p: float 0-1
         '''
-        p = float(min(max(0, p), 1))
+        p = self._normalize_p(p)
         self._remove_all_edges()
         vs = self.vertices()
         for i, v in enumerate(vs):
